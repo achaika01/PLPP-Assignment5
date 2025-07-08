@@ -7,12 +7,13 @@
 using namespace std;
 
 bool Interpreter::is_operator(char c) {
-    return std::string("+-*/()").find(c) != std::string::npos;
+    return std::string("+-*/()u-").find(c) != std::string::npos;
 }
 
 int Interpreter::OperationPriority(std::string& operation) {
     if (operation == "+" || operation == "-") return 1;
     else if (operation == "*" || operation == "/") return 2;
+    else if (operation == "u-") return 3;
     return 0;
 }
 
@@ -60,7 +61,13 @@ std::vector<std::string> Interpreter::tokenize(const std::string& text) {
                 tokens.push_back(number);
                 number.clear();
             }
-            tokens.push_back(std::string(1, c));
+            std::string op(1, c);
+            if (op == "-" && (tokens.empty() || is_operator(tokens.back()[0]) || tokens.back() == "(")) {
+                tokens.push_back("u-");
+            }
+            else {
+                tokens.push_back(op);
+            }
         }
         else {
             cerr << "Unknown character: " << c << endl;
@@ -131,26 +138,38 @@ int Interpreter::calculate(const vector<std::string>& rpn) {
             cal_stack.push(stoi(token));
         }
         else {
-            int num2 = cal_stack.top();
-            cal_stack.pop();
-            int num1 = cal_stack.top();
-            cal_stack.pop();
-            int result = 0;
-
-            if (token == "+") result = num1 + num2;
-            else if (token == "-") result = num1 - num2;
-            else if (token == "*") result = num1 * num2;
-            else if (token == "/") result = num1 / num2;
-            else
-            {
-                cout << "Invalid operator" << endl;
+            if (token == "u-") {
+                int num = cal_stack.top();
+                cal_stack.pop();
+                cal_stack.push(-num);
             }
+            else {
+                int num2 = cal_stack.top();
+                cal_stack.pop();
+                int num1 = cal_stack.top();
+                cal_stack.pop();
+                int result = 0;
 
-            cal_stack.push(result);
+                if (token == "+") result = num1 + num2;
+                else if (token == "-") result = num1 - num2;
+                else if (token == "*") result = num1 * num2;
+                else if (token == "/") {
+                    if (num2 == 0) {
+                        cerr << "You can't divide by 0" << endl;
+                        exit(1);
+                    }
+                    else result = num1 / num2;
+                }
+                else
+                {
+                    cout << "Invalid operator" << endl;
+                }
+
+                cal_stack.push(result);
+            }
+           
         }
     }
     return cal_stack.top();
 
 }
-
-//5 + (3 * (2 + 4))

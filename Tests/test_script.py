@@ -33,6 +33,26 @@ def test_inter():
             "input": "  42/  2 +6",
             "expected_output": "Enter expression: Result: 27"
         },
+        {
+            "input": "-5 + 3",
+            "expected_output": "Enter expression: Result: -2"
+        },
+        {
+            "input": "-(2 + 3)",
+            "expected_output": "Enter expression: Result: -5"
+        },
+        {
+            "input": "4 * -2",
+            "expected_output": "Enter expression: Result: -8"
+        },
+        {
+            "input": "-(1 + 2) * (3 - 4)",
+            "expected_output": "Enter expression: Result: 3"
+        },
+        {
+            "input": "-4 + -(-3)",
+            "expected_output": "Enter expression: Result: -1"
+        },
     ]
     for test in tests:
         input_data = test["input"]
