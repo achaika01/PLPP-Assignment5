@@ -53,6 +53,94 @@ def test_inter():
             "input": "-4 + -(-3)",
             "expected_output": "Enter expression: Result: -1"
         },
+        {
+            "input": "pow(2, 3)",
+            "expected_output": "Enter expression: Result: 8"
+        },
+        {
+            "input": "pow(5, 0)",
+            "expected_output": "Enter expression: Result: 1"
+        },
+        {
+            "input": "abs(-10)",
+            "expected_output": "Enter expression: Result: 10"
+        },
+        {
+            "input": "abs(7)",
+            "expected_output": "Enter expression: Result: 7"
+        },
+        {
+            "input": "max(3, 4)",
+            "expected_output": "Enter expression: Result: 4"
+        },
+        {
+            "input": "max(-5, -2)",
+            "expected_output": "Enter expression: Result: -2"
+        },
+        {
+            "input": "min(3, 4)",
+            "expected_output": "Enter expression: Result: 3"
+        },
+        {
+            "input": "min(-5, -2)",
+            "expected_output": "Enter expression: Result: -5"
+        },
+        {
+            "input": "pow(2, 3) + abs(-4)",
+            "expected_output": "Enter expression: Result: 12"
+        },
+        {
+            "input": "max(5, min(3, 2))",
+            "expected_output": "Enter expression: Result: 5"
+        },
+        {
+            "input": "pow(2, 2) + pow(3, 2)",
+            "expected_output": "Enter expression: Result: 13"
+        },
+        {
+            "input": "abs(-pow(2, 3))",
+            "expected_output": "Enter expression: Result: 8"
+        },
+        {
+            "input": "max(pow(2, 3), pow(3, 2))",
+            "expected_output": "Enter expression: Result: 9"
+        },
+        {
+            "input": "min(abs(-10), abs(5 - 15))",
+            "expected_output": "Enter expression: Result: 10"
+        },
+        {
+            "input": "max(2, min(3, 1)) + abs(-5)",
+            "expected_output": "Enter expression: Result: 7"
+        },
+        {
+            "input": "pow(2, 3) * min(4, 2)",
+            "expected_output": "Enter expression: Result: 16"
+        },
+        {
+            "input": "-pow(2, 2) + abs(-3 * 2)",
+            "expected_output": "Enter expression: Result: 2"
+        },
+        {
+            "input": "min(max(1, 2), max(3, 4))",
+            "expected_output": "Enter expression: Result: 2"
+        },
+        {
+            "input": "pow(2, 2 + 1)",
+            "expected_output": "Enter expression: Result: 8"
+        },
+        {
+            "input": "pow(2, pow(1+1, 2))",
+            "expected_output": "Enter expression: Result: 16"
+        },
+        {
+            "input": "max(abs(-3), min(10, pow(2, 3)))",
+            "expected_output": "Enter expression: Result: 8"
+        },
+        {
+            "input": "abs(-pow(2, 2) + min(5, 10))",
+            "expected_output": "Enter expression: Result: 1"
+        },
     ]
     for test in tests:
         input_data = test["input"]
@@ -61,10 +149,10 @@ def test_inter():
         output, error = run_inter(input_data)
 
         if error:
-            print(f"Test failed for input:\n{input_data}")
-            print(f"Error:\n{error}")
+            print(f"\n!!!ERROR!!!!\nTest failed for input:\n{input_data}")
+            print(f"\nError:\n{error}")
         elif output.strip() != expected_output:
-            print(f"Test failed for input:\n{input_data}")
+            print(f"\n!!!ERROR!!!!\nTest failed for input:\n{input_data}")
             print(f"Expected:\n{expected_output}")
             print(f"Got:\n{output}")
         else:
