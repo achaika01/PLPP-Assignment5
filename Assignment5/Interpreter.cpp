@@ -18,7 +18,7 @@ int Interpreter::OperationPriority(std::string& operation) {
     if (operation == "+" || operation == "-") return 1;
     else if (operation == "*" || operation == "/") return 2;
     else if (operation == "u-") return 3;
-    else if (operation == "pow" || operation == "abs" || operation == "max" || operation == "min") return 4;
+    else if (user_functions.count(operation) || operation == "pow" || operation == "abs" || operation == "max" || operation == "min") return 4;
     return 0;
 }
 
@@ -37,15 +37,6 @@ void Interpreter::skip_whitespace() {
         advance();
     }
 }
-
-//std::string Interpreter::number() {
-//    std::string result;
-//    while (current_char != '\0' && isdigit(current_char)) {
-//        result += current_char;
-//        advance();
-//    }
-//    return result;
-//}
 
 std::vector<std::string> Interpreter::tokenize(const std::string& text) {
     vector<std::string> tokens;

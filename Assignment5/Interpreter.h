@@ -22,7 +22,6 @@ public:
     int OperationPriority(std::string& operation);
     void advance();
     void skip_whitespace();
-    //std::string number();
     std::vector<std::string> tokenize(const std::string& text);
     std::vector<std::string> toRPN(const std::vector<std::string>& tokens);
     int calculate(const std::vector<std::string>& rpn);
