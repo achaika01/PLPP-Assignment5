@@ -8,6 +8,8 @@
 #include "Interpreter.h"
 using namespace std;
 
+std::map<std::string, FunctionDef> Interpreter::user_functions;
+
 bool Interpreter::is_operator(char c) {
     return std::string("+-*/()u-").find(c) != std::string::npos;
 }
@@ -47,36 +49,47 @@ void Interpreter::skip_whitespace() {
 
 std::vector<std::string> Interpreter::tokenize(const std::string& text) {
     vector<std::string> tokens;
-    std::string token;
-    std::string func;
+    int i = 0;
 
-    for (int i = 0; i < text.size();i++) {
+    while (i < text.size()) {
+        if (isspace(text[i])) {
+            i++;
+            continue;
+        }
+
         if (isdigit(text[i])) {
-            if (!func.empty()) {
-                tokens.push_back(func);
-                func.clear();
+            std::string number;
+            while (i < text.size() && isdigit(text[i])) {
+                number += text[i];
+                i++;
             }
-            token += text[i];
+            tokens.push_back(number);
+            continue;
         }
-        else if (isspace(text[i])) {
-            if (!func.empty()) {
-                tokens.push_back(func);
-                func.clear();
+
+        if (isalpha(text[i])) {
+            std::string func_name;
+            while (i < text.size() && (isalpha(text[i]))) {
+                func_name += text[i];
+                i++;
             }
-            if (!token.empty()) {
-                tokens.push_back(token);
-                token.clear();
-            }
+            tokens.push_back(func_name);
+            continue;
         }
-        else if (is_operator(text[i])) {
-            if (!func.empty()) {
-                tokens.push_back(func);
-                func.clear();
-            }
-            if (!token.empty()) {
-                tokens.push_back(token);
-                token.clear();
-            }
+
+        if (text[i] == ',') {
+            tokens.push_back(",");
+            i++;
+            continue;
+        }
+
+        if (text[i] == '(' || text[i] == ')') {
+            tokens.push_back(std::string(1, text[i]));
+            i++;
+            continue;
+        }
+
+        if (is_operator(text[i])) {
             std::string op(1, text[i]);
             if (op == "-" && (tokens.empty() || is_operator(tokens.back()[0]) || tokens.back() == "(" || tokens.back() == ",")) {
                 tokens.push_back("u-");
@@ -84,29 +97,13 @@ std::vector<std::string> Interpreter::tokenize(const std::string& text) {
             else {
                 tokens.push_back(op);
             }
-        }
-        else if (isalpha(text[i])) {
-            func += text[i];
-        }
-        else if (text[i] == ',') {
-            if (!func.empty()) {
-                tokens.push_back(func);
-                func.clear();
-            }
-            if (!token.empty()) {
-                tokens.push_back(token);
-                token.clear();
-            }
-            tokens.push_back(",");
-        }
-        else {
-            cerr << "Unknown character: " << text[i] << endl;
-        }
-    }
 
+            i++;
+            continue;
+        }
 
-    if (!token.empty()) {
-        tokens.push_back(token);
+        std::cerr << "Unknown character: " << text[i] << std::endl;
+        i++;
     }
 
     return tokens;
@@ -141,7 +138,7 @@ vector<std::string> Interpreter::toRPN(const vector<std::string>& tokens) {
             stack.pop();
 
             if (!stack.empty() &&
-                (stack.top() == "pow" || stack.top() == "abs" || stack.top() == "max" || stack.top() == "min")) {
+                (user_functions.count(stack.top()) || stack.top() == "pow" || stack.top() == "abs" || stack.top() == "max" || stack.top() == "min")) {
                 output.push_back(stack.top());
                 stack.pop();
             }
@@ -155,7 +152,7 @@ vector<std::string> Interpreter::toRPN(const vector<std::string>& tokens) {
             stack.push(token);
         }
 
-        else if (token == "pow" || token == "abs" || token == "max" || token == "min") {
+        else if (user_functions.count(token) || token == "pow" || token == "abs" || token == "max" || token == "min") {
             stack.push(token);
         }
         else if (token == ",") {
@@ -202,6 +199,43 @@ int Interpreter::calculate(const vector<std::string>& rpn) {
                 cal_stack.pop();
                 cal_stack.push(abs(num));
             }
+            else if (user_functions.count(token)) {
+                FunctionDef func = user_functions[token];
+
+                if (cal_stack.size() < func.parameters.size()) cerr << "Not enough parameters" << endl;
+
+                std::vector<int> args(func.parameters.size());
+
+                for (int i = func.parameters.size() - 1; i >= 0; --i) {
+                    args[i] = cal_stack.top();
+                    cal_stack.pop();
+                }
+
+                std::string new_body = func.body;
+                for (int i = 0; i < func.parameters.size(); ++i) {
+                    const std::string& param = func.parameters[i];
+                    std::string val = std::to_string(args[i]);
+
+                    int position = 0;
+                    while ((position = new_body.find(param, position)) != std::string::npos) {
+                        bool left_ok = (position == 0) || !isalnum(new_body[position - 1]);
+                        bool right_ok = (position + param.length() == new_body.length()) || !isalnum(new_body[position + param.length()]);
+                        if (left_ok && right_ok) {
+                            new_body.replace(position, param.length(), val);
+                            position += val.length();
+                        }
+                        else {
+                            position += param.length();
+                        }
+                    }
+                }
+
+                std::vector<std::string> new_tokens = tokenize(new_body);
+                std::vector<std::string> new_rpn = toRPN(new_tokens);
+                int result = calculate(new_rpn);
+
+                cal_stack.push(result);
+            }
             else {
                 int num2 = cal_stack.top();
                 cal_stack.pop();
@@ -235,3 +269,86 @@ int Interpreter::calculate(const vector<std::string>& rpn) {
     return cal_stack.top();
 
 }
+
+void Interpreter::define_function(const std::string& line) {
+    if (line.substr(0, 3) != "def") {
+        cerr << "Not a function declaration" << line << endl;
+        return;
+    }
+
+    FunctionDef func;
+    std::string func_name;
+    std::vector<std::string> param;
+    std::string bod;
+
+    int i = 3;
+
+    while (i < line.size() && isspace(line[i])) i++;
+
+
+    while (line[i] != '(' && i < line.size()) {
+        if (!isspace(line[i])) {
+            func_name += line[i];
+        }
+        i++;
+    }
+
+    if (i >= line.size() || line[i] != '(') {
+        cerr << "Expected '(' after function name\n";
+        return;
+    }
+
+    if (line[i] == '(') {
+        i++;
+        std::string param_buf;
+        while (line[i] != ')' && i < line.size()) {
+            if (line[i] == ',' || isspace(line[i])) {
+                if (!param_buf.empty()) {
+                    param.push_back(param_buf);
+                    param_buf.clear();
+                }
+                i++;
+                continue;
+            }
+            param_buf += line[i];
+            i++;
+        }
+    
+        if (!param_buf.empty()) {
+            param.push_back(param_buf);
+        }
+    }
+
+    if (i >= line.size() || line[i] != ')') {
+        cerr << "Expected ')' after parameters\n";
+        return;
+    }
+
+    if (line[i] == ')') i++;
+
+    while (i < line.size() && isspace(line[i])) i++;
+
+    if (i >= line.size() || line[i] != '{') {
+        cerr << "Expected '{' before function body\n";
+        return;
+    }
+
+    if (line[i] == '{') i++;
+
+    while (i < line.size() && line[i] != '}') {
+        bod += line[i];
+        i++;
+    }
+    
+    if (i >= line.size() || line[i] != '}') {
+        cerr << "Expected '}' at end of function body\n";
+        return;
+    }
+
+    func.parameters = param;
+    func.body = bod;
+
+    user_functions[func_name] = func;
+}
+
+//def sum(a, b) { a + b }

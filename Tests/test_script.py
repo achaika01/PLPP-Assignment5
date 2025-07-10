@@ -14,133 +14,145 @@ def run_inter(input_data):
 def test_inter():
     tests = [
         {
-            "input": "5 + 4",
+            "input": "test\n5 + 4",
             "expected_output": "Enter expression: Result: 9"
         },
         {
-            "input": "2+(3*4)",
+            "input": "test\n2+(3*4)",
             "expected_output": "Enter expression: Result: 14"
         },
         {
-            "input": "(1 + 2) * (3 + 4)",
+            "input": "test\n(1 + 2) * (3 + 4)",
             "expected_output": "Enter expression: Result: 21"
         },
         {
-            "input": "100 - 25 * (2 + 1)",
+            "input": "test\n100 - 25 * (2 + 1)",
             "expected_output": "Enter expression: Result: 25"
         },
         {
-            "input": "  42/  2 +6",
+            "input": "test\n  42/  2 +6",
             "expected_output": "Enter expression: Result: 27"
         },
         {
-            "input": "-5 + 3",
+            "input": "test\n-5 + 3",
             "expected_output": "Enter expression: Result: -2"
         },
         {
-            "input": "-(2 + 3)",
+            "input": "test\n-(2 + 3)",
             "expected_output": "Enter expression: Result: -5"
         },
         {
-            "input": "4 * -2",
+            "input": "test\n4 * -2",
             "expected_output": "Enter expression: Result: -8"
         },
         {
-            "input": "-(1 + 2) * (3 - 4)",
+            "input": "test\n-(1 + 2) * (3 - 4)",
             "expected_output": "Enter expression: Result: 3"
         },
         {
-            "input": "-4 + -(-3)",
+            "input": "test\n-4 + -(-3)",
             "expected_output": "Enter expression: Result: -1"
         },
         {
-            "input": "pow(2, 3)",
+            "input": "test\npow(2, 3)",
             "expected_output": "Enter expression: Result: 8"
         },
         {
-            "input": "pow(5, 0)",
+            "input": "test\npow(5, 0)",
             "expected_output": "Enter expression: Result: 1"
         },
         {
-            "input": "abs(-10)",
+            "input": "test\nabs(-10)",
             "expected_output": "Enter expression: Result: 10"
         },
         {
-            "input": "abs(7)",
+            "input": "test\nabs(7)",
             "expected_output": "Enter expression: Result: 7"
         },
         {
-            "input": "max(3, 4)",
+            "input": "test\nmax(3, 4)",
             "expected_output": "Enter expression: Result: 4"
         },
         {
-            "input": "max(-5, -2)",
+            "input": "test\nmax(-5, -2)",
             "expected_output": "Enter expression: Result: -2"
         },
         {
-            "input": "min(3, 4)",
+            "input": "test\nmin(3, 4)",
             "expected_output": "Enter expression: Result: 3"
         },
         {
-            "input": "min(-5, -2)",
+            "input": "test\nmin(-5, -2)",
             "expected_output": "Enter expression: Result: -5"
         },
         {
-            "input": "pow(2, 3) + abs(-4)",
+            "input": "test\npow(2, 3) + abs(-4)",
             "expected_output": "Enter expression: Result: 12"
         },
         {
-            "input": "max(5, min(3, 2))",
+            "input": "test\nmax(5, min(3, 2))",
             "expected_output": "Enter expression: Result: 5"
         },
         {
-            "input": "pow(2, 2) + pow(3, 2)",
+            "input": "test\npow(2, 2) + pow(3, 2)",
             "expected_output": "Enter expression: Result: 13"
         },
         {
-            "input": "abs(-pow(2, 3))",
+            "input": "test\nabs(-pow(2, 3))",
             "expected_output": "Enter expression: Result: 8"
         },
         {
-            "input": "max(pow(2, 3), pow(3, 2))",
+            "input": "test\nmax(pow(2, 3), pow(3, 2))",
             "expected_output": "Enter expression: Result: 9"
         },
         {
-            "input": "min(abs(-10), abs(5 - 15))",
+            "input": "test\nmin(abs(-10), abs(5 - 15))",
             "expected_output": "Enter expression: Result: 10"
         },
         {
-            "input": "max(2, min(3, 1)) + abs(-5)",
+            "input": "test\nmax(2, min(3, 1)) + abs(-5)",
             "expected_output": "Enter expression: Result: 7"
         },
         {
-            "input": "pow(2, 3) * min(4, 2)",
+            "input": "test\npow(2, 3) * min(4, 2)",
             "expected_output": "Enter expression: Result: 16"
         },
         {
-            "input": "-pow(2, 2) + abs(-3 * 2)",
+            "input": "test\n-pow(2, 2) + abs(-3 * 2)",
             "expected_output": "Enter expression: Result: 2"
         },
         {
-            "input": "min(max(1, 2), max(3, 4))",
+            "input": "test\nmin(max(1, 2), max(3, 4))",
             "expected_output": "Enter expression: Result: 2"
         },
         {
-            "input": "pow(2, 2 + 1)",
+            "input": "test\npow(2, 2 + 1)",
             "expected_output": "Enter expression: Result: 8"
         },
         {
-            "input": "pow(2, pow(1+1, 2))",
+            "input": "test\npow(2, pow(1+1, 2))",
             "expected_output": "Enter expression: Result: 16"
         },
         {
-            "input": "max(abs(-3), min(10, pow(2, 3)))",
+            "input": "test\nmax(abs(-3), min(10, pow(2, 3)))",
             "expected_output": "Enter expression: Result: 8"
         },
         {
-            "input": "abs(-pow(2, 2) + min(5, 10))",
+            "input": "test\nabs(-pow(2, 2) + min(5, 10))",
             "expected_output": "Enter expression: Result: 1"
         },
+        {
+            "input": "test\ndef sum(a,b) { a + b }\nsum(3,4)",
+            "expected_output": "Enter expression: Result: 7"
+        },
+        {
+            "input": "test\ndef square(x) { x * x }\nsquare(5)",
+            "expected_output": "Enter expression: Result: 25"
+        },
+        {
+            "input": "test\ndef complex(a,b) { min(a,b) + max(a,b) * 2 }\ncomplex(3,4)",
+            "expected_output": "Enter expression: Result: 11"
+        }
     ]
     for test in tests:
         input_data = test["input"]

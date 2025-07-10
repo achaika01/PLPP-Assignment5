@@ -1,5 +1,7 @@
 #include <string>
 #include <vector>
+#include <map>
+#include "FunctionDef.h"
 
 class Interpreter {
     std::string text;
@@ -25,4 +27,10 @@ public:
     std::vector<std::string> toRPN(const std::vector<std::string>& tokens);
     int calculate(const std::vector<std::string>& rpn);
 
+    static std::map<std::string, FunctionDef> user_functions;
+
+    void define_function(const std::string& line);
+
 };
+
+
